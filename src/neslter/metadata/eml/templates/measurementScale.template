@@ -1,0 +1,37 @@
+{# required context variables: #}
+{# - ms: an EmlMeasurementScale #}
+<measurementScale>
+{% if ms.is_date %}
+<dateTime>
+    <formatString>YYYY-MM-DD hh:mm:ss</formatString>
+</dateTime>
+{% elif ms.is_string %}
+<nominal>
+    <nonNumericDomain>
+        <textDomain>
+            <definition>{{ ms.definition }}</definition>
+        </textDomain>
+    </nonNumericDomain>
+</nominal>
+{% else %}
+<{{ ms.ratio_or_interval }}>
+    {% if ms.unit is not none %}
+    <unit>
+        <{{ ms.unit.standard_or_custom }}Unit>{{ ms.unit.name }}</{{ ms.unit.standard_or_custom }}Unit>
+    </unit>
+    {% endif %}
+    {% if ms.is_real %}
+    {% if ms.precision is not none %}
+    <precision>{{ ms.precision }}</precision>
+    {% endif %}
+    <numericDomain>
+        <numberType>real</numberType>
+    </numericDomain>
+    {% elif ms.is_integer %}
+    <numericDomain>
+        <numberType>integer</numberType>
+    </numericDomain>
+    {% endif %}
+</{{ ms.ratio_or_interval }}>
+{% endif %}
+</measurementScale>
